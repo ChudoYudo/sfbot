@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class WebHookController extends AbstractController
 {
     /**
-     * @Route("/webhook", name="web_hook")
+     * @Route("/webhook", name="web_hook_in")
      */
     public function index()
     {
@@ -19,22 +19,22 @@ class WebHookController extends AbstractController
         ]);
     }
     /**
-     * @Route("/webhook/hk", name="web_hook")
+     * @Route("/webhook/hk", name="web_hook_hk")
      */
     public function hk(Request $request)
     {
-        file_put_contents("kek",(string)$request->getContent());
+        file_put_contents("kek.txt",(string)$request);
         return $this->json([
             'message' => 'Welcome to your new controller!',
             'path' => 'src/Controller/WebHookController.php',
         ]);
     }
     /**
-     * @Route("/webhook/sh", name="web_hook")
+     * @Route("/webhook/sh", name="web_hook_sh")
      */
     public function sh(Request $request)
     {
-        $info=file_get_contents("kek",(string)$request);
+        $info=file_get_contents("kek.txt",(string)$request);
         var_dump($info);
         exit();
     }
