@@ -26,6 +26,11 @@ class User
      */
     private $chatId;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $first_name;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -51,6 +56,18 @@ class User
     public function setChatId(string $chatId): self
     {
         $this->chatId = $chatId;
+
+        return $this;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->first_name;
+    }
+
+    public function setFirstName(?string $first_name): self
+    {
+        $this->first_name = $first_name;
 
         return $this;
     }

@@ -23,7 +23,9 @@ class WebHookController extends AbstractController
      */
     public function hk(Request $request)
     {
-        file_put_contents("kek.txt",json_encode($request));
+        var_dump(json_decode($request->getContent()));
+        exit();
+        file_put_contents("kek.txt",$request->getContent());
         return $this->json([
             'message' => 'Welcome to your new controller!',
             'path' => 'src/Controller/WebHookController.php',
@@ -34,7 +36,7 @@ class WebHookController extends AbstractController
      */
     public function sh(Request $request)
     {
-        $info=file_get_contents("kek.txt",json_decode($request));
+        $info=file_get_contents("kek.txt",$request);
         var_dump($info);
         exit();
     }
