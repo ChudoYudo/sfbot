@@ -54,12 +54,13 @@ class WebHookController extends AbstractController
             if ($user->getLastComand()=='log'){
                 if ($user->getComandDeep()==2){
                     $telegram->sendMessage(['chat_id'=>$user->getChatId(),'text'=>'pass:']);
-                    $user->setComandDeep($user->getComandDeep() - 1);
                     $user->setUserName($message->getText());
+                    $user->setComandDeep($user->getComandDeep() - 1);
                     $this->getDoctrine()->getManager()->persist($user);
                     $this->getDoctrine()->getManager()->flush();
                 } elseif ($user->getComandDeep()==1){
                     $telegram->sendMessage(['chat_id'=>$user->getChatId(),'text'=>'success!']);
+                    $user->setPassword($message->getText());
                     $user->setComandDeep($user->getComandDeep() - 1);
                     $this->getDoctrine()->getManager()->persist($user);
                     $this->getDoctrine()->getManager()->flush();
@@ -72,15 +73,12 @@ class WebHookController extends AbstractController
                     $telegram->sendMessage(['chat_id'=>$user->getChatId(),'text'=>'login:']);
                     $user->setLastComand('log');
                     $user->setComandDeep(2);
-                    $user->setUserName($message->getText());
                     $this->getDoctrine()->getManager()->persist($user);
                     $this->getDoctrine()->getManager()->flush();
                     break;
             }
         }
 
-        exit();
-        file_put_contents("kek.txt",$request->getContent());
         return $this->json([
             'message' => 'Welcome to your new controller!',
             'path' => 'src/Controller/WebHookController.php',
