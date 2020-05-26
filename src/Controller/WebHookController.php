@@ -68,6 +68,8 @@ class WebHookController extends AbstractController
 
             }
         } else {
+            var_dump($message->getText());
+            exit;
             switch ($message->getText()) {
                 case '/log':
                     $telegram->sendMessage(['chat_id'=>$user->getChatId(),'text'=>'login:']);
