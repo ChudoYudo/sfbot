@@ -58,8 +58,7 @@ class WebHookController extends AbstractController
                     $user->setUserName($message->getText());
                     $this->getDoctrine()->getManager()->persist($user);
                     $this->getDoctrine()->getManager()->flush();
-                }
-                if ($user->getComandDeep()==1){
+                } elseif ($user->getComandDeep()==1){
                     $telegram->sendMessage(['chat_id'=>$user->getChatId(),'text'=>'success!']);
                     $user->setComandDeep($user->getComandDeep() - 1);
                     $this->getDoctrine()->getManager()->persist($user);
