@@ -41,6 +41,16 @@ class User
      */
     private $comand_deep;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $password;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $username;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -102,6 +112,18 @@ class User
     public function setComandDeep(?int $comand_deep): self
     {
         $this->comand_deep = $comand_deep;
+
+        return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(?string $password): self
+    {
+        $this->password = $password;
 
         return $this;
     }

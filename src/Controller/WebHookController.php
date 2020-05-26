@@ -29,6 +29,7 @@ class WebHookController extends AbstractController
 //        var_dump($message);
         $telegram = new Api('1253793965:AAGiYA7dz7xfPwmiK0BE59ZqAxeddOLDIUI');
         $sender=$telegram->getWebhookUpdates()->getMessage()->getFrom();
+        $message=$telegram->getWebhookUpdates()->getMessage();
         $user = $this->getDoctrine()
             ->getRepository(User::class)
             ->findBy(["chatId"=>$sender->getId()]);
@@ -50,7 +51,35 @@ class WebHookController extends AbstractController
                 $this->getDoctrine()->getManager()->persist($user);
                 $this->getDoctrine()->getManager()->flush();
             }
+            if ($user->getLastComand()=='log'){
+                if ($user->getComandDeep()==2){
+                    $telegram->sendMessage(['chat_id'=>$user->getChatId(),'text'=>'pass:']);
+                    $user->setComandDeep($user->getComandDeep() - 1);
+                    $user->setUserName($message->getText());
+                    $this->getDoctrine()->getManager()->persist($user);
+                    $this->getDoctrine()->getManager()->flush();
+                }
+                if ($user->getComandDeep()==1){
+                    $telegram->sendMessage(['chat_id'=>$user->getChatId(),'text'=>'success!']);
+                    $user->setComandDeep($user->getComandDeep() - 1);
+                    $this->getDoctrine()->getManager()->persist($user);
+                    $this->getDoctrine()->getManager()->flush();
+                }
+
+            }
+        } else {
+            switch ($message->getText()) {
+                case '/log':
+                    $telegram->sendMessage(['chat_id'=>$user->getChatId(),'text'=>'login:']);
+                    $user->setLastComand('log');
+                    $user->setComandDeep(2);
+                    $user->setUserName($message->getText());
+                    $this->getDoctrine()->getManager()->persist($user);
+                    $this->getDoctrine()->getManager()->flush();
+                    break;
+            }
         }
+
         exit();
         file_put_contents("kek.txt",$request->getContent());
         return $this->json([
