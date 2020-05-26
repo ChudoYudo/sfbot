@@ -35,7 +35,7 @@ class WebHookController extends AbstractController
     public function sh(Request $request)
     {
         $info=file_get_contents("kek.txt",json_decode($request));
-        var_dump("kek");
+        var_dump($info);
         exit();
     }
 }
