@@ -32,7 +32,7 @@ class WebHookController extends AbstractController
         $message=$telegram->getWebhookUpdates()->getMessage();
         $user = $this->getDoctrine()
             ->getRepository(User::class)
-            ->findBy(["chatId"=>$sender->getId()]);
+            ->findBy(["chatId"=>$sender->getId()])[0];
         if (!$user){
             $user = new User();
             $user->setUserName($sender->getUsername());
@@ -68,8 +68,6 @@ class WebHookController extends AbstractController
 
             }
         } else {
-            var_dump($message->getText());
-            exit;
             switch ($message->getText()) {
                 case '/log':
                     $telegram->sendMessage(['chat_id'=>$user->getChatId(),'text'=>'login:']);
