@@ -82,7 +82,7 @@ class WebHookController extends AbstractController
                     $this->getDoctrine()->getManager()->flush();
                     $tickets = $user->getTickets();
                     if (!$tickets){
-                        $telegram->sendMessage(['parse_mode'=>'HTML','chat_id'=>$user->getChatId(),"text'=>'Something went wrong. \n Try change login data with /log command"]);
+                        $telegram->sendMessage(['chat_id'=>$user->getChatId(),'text'=>"Something went wrong. \n Try change login data with /log command"]);
                         break;
                     }
                     foreach ($tickets as $id => $info) {
