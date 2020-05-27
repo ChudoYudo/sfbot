@@ -93,7 +93,7 @@ class GoogleAuthenticator extends SocialAuthenticator
      */
     public function start(Request $request, \Symfony\Component\Security\Core\Exception\AuthenticationException $authException = null)
     {
-        return new RedirectResponse('/login');
+        return new RedirectResponse('/google/connect');
     }
 
     /**
