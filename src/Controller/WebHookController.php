@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Telegram\Bot\Api;
+use Telegram\Bot\Objects\CallbackQuery;
 
 class WebHookController extends AbstractController
 {
@@ -25,9 +26,7 @@ class WebHookController extends AbstractController
      */
     public function hk(Request $request)
     {
-//        $message=get_object_vars(json_decode($request->getContent()));
-//        var_dump($message);
-        $telegram = new Api('1253793965:AAGiYA7dz7xfPwmiK0BE59ZqAxeddOLDIUI');
+        $telegram = new Api($this->getParameter('api_token'));
         $sender=$telegram->getWebhookUpdates()->getMessage()->getFrom();
         $message=$telegram->getWebhookUpdates()->getMessage();
         $user = $this->getDoctrine()
@@ -76,6 +75,26 @@ class WebHookController extends AbstractController
                     $this->getDoctrine()->getManager()->persist($user);
                     $this->getDoctrine()->getManager()->flush();
                     break;
+                case '/tickets':
+                    $user->setLastComand('tickets');
+                    $user->setComandDeep(0);
+                    $this->getDoctrine()->getManager()->persist($user);
+                    $this->getDoctrine()->getManager()->flush();
+                    $tickets = $user->getTickets();
+                    if (!$tickets){
+                        $telegram->sendMessage(['parse_mode'=>'HTML','chat_id'=>$user->getChatId(),"text'=>'Something went wrong. \n Try change login data with /log command"]);
+                    }
+                    foreach ($tickets as $id => $info) {
+                        $keyboard = [
+                            [ ['text' => 'Open in Unfuddle','url'=>'https://acobby.unfuddle.com/projects/44/tickets/by_number/'.$id],],
+                        ];
+                        $reply_markup = $telegram->replyKeyboardMarkup([
+                            'inline_keyboard'=>$keyboard,
+                            'one_time_keyboard'=>false
+                        ]);
+                        $msg = $id."\n".$info['summary'].":\n\n".$info['description'];
+                        $telegram->sendMessage(['parse_mode'=>'HTML','chat_id'=>$user->getChatId(),'text'=>$msg,'reply_markup'=>$reply_markup]);
+                    }
             }
         }
 

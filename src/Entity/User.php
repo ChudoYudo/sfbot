@@ -58,7 +58,7 @@ class User
 
     public function getUserName(): ?string
     {
-        return $this->userName;
+        return $this->username;
     }
 
     public function setUserName(?string $userName): self
@@ -126,5 +126,37 @@ class User
         $this->password = $password;
 
         return $this;
+    }
+    public function getTickets(){
+        $url = 'https://acobby.unfuddle.com/api/v1/projects/44/tickets';
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL,$url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($ch, CURLOPT_USERPWD, $i=$this->getUserName().":".$this->getPassword());
+        $result = curl_exec($ch);
+        $info = curl_getinfo($ch);
+        curl_close($ch);
+        if ($info['http_code']!=200){
+            return false;
+        }
+
+        $xml=simplexml_load_string($result);
+        $resp = array();
+        foreach ($xml->xpath('//ticket') as $item) {
+            $row = simplexml_load_string($item->asXML());
+            $v = $row->xpath('//version-id[. =""]');
+            if(isset($v[0])){
+                if ((string)$item->status!=='closed') {
+                    $resp+=array(
+                        (string)$item->number=>
+                            array(
+                                'description' => (string)$item->description,
+                                'summary' => (string)$item->summary,
+                            ));
+                }
+            }
+        }
+        return $resp;
     }
 }
