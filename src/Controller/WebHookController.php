@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
+use App\Entity\TelegramUser;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,11 +29,16 @@ class WebHookController extends AbstractController
         $telegram = new Api($this->getParameter('api_token'));
         $sender=$telegram->getWebhookUpdates()->getMessage()->getFrom();
         $message=$telegram->getWebhookUpdates()->getMessage();
-        $user = $this->getDoctrine()
-            ->getRepository(User::class)
-            ->findBy(["chatId"=>$sender->getId()])[0];
+        $users = $this->getDoctrine()
+            ->getRepository(TelegramUser::class)
+            ->findBy(["chatId"=>$sender->getId()]);
+        if ($users){
+            $user=$users[0];
+        } else {
+            $user=null;
+        }
         if (!$user){
-            $user = new User();
+            $user = new TelegramUser();
             $user->setUserName($sender->getUsername());
             $user->setChatId($sender->getId());
             $user->setFirstName($sender->getFirstName());
@@ -81,6 +86,7 @@ class WebHookController extends AbstractController
                     $this->getDoctrine()->getManager()->persist($user);
                     $this->getDoctrine()->getManager()->flush();
                     $tickets = $user->getTickets();
+                    $telegram->sendChatAction(['chat_id' => $user->getChatId(), 'action' => 'typing']);
                     if (!$tickets){
                         $telegram->sendMessage(['chat_id'=>$user->getChatId(),'text'=>"Something went wrong. \n Try change login data with /log command"]);
                         break;

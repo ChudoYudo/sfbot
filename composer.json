@@ -6,6 +6,8 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "irazasyed/telegram-bot-sdk": "^2.0",
+        "knpuniversity/oauth2-client-bundle": "^2.1",
+        "league/oauth2-google": "^3.0",
         "sensio/framework-extra-bundle": "^5.5",
         "symfony/console": "5.0.*",
         "symfony/dotenv": "5.0.*",

@@ -23,7 +23,7 @@ class Message
     private $chat_id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\ManyToOne(targetEntity="TelegramUser")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user_id;
@@ -60,12 +60,12 @@ class Message
         return $this;
     }
 
-    public function getUserId(): ?User
+    public function getUserId(): ?TelegramUser
     {
         return $this->user_id;
     }
 
-    public function setUserId(?User $user_id): self
+    public function setUserId(?TelegramUser $user_id): self
     {
         $this->user_id = $user_id;
 
