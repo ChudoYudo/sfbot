@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Profiler\Profiler;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController extends AbstractController
@@ -12,9 +13,16 @@ class DefaultController extends AbstractController
      */
     public function index()
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/DefaultController.php',
+        // get the user information and notifications somehow
+        $userFirstName = $this->getUser()->getUsername();
+        $userNotifications = ['...', '...'];
+        // the template path is the relative file path from `templates/`
+        return $this->render('default/index.html.twig', [
+            // this array defines the variables passed to the template,
+            // where the key is the variable name and the value is the variable value
+            // (Twig recommends using snake_case variable names: 'foo_bar' instead of 'fooBar')
+            'user_first_name' => $userFirstName,
+            'notifications' => $userNotifications,
         ]);
     }
 }

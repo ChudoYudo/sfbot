@@ -32,6 +32,11 @@ class User implements UserInterface
      */
     private $created_at;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $role;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -138,5 +143,17 @@ class User implements UserInterface
     public function eraseCredentials()
     {
         return null;
+    }
+
+    public function getRole(): ?string
+    {
+        return $this->role;
+    }
+
+    public function setRole(?string $role): self
+    {
+        $this->role = $role;
+
+        return $this;
     }
 }

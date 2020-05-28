@@ -16,9 +16,13 @@ class WebHookController extends AbstractController
      */
     public function index()
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/WebHookController.php',
+        $userFirstName = $this->getUser()->getUsername();
+        // the template path is the relative file path from `templates/`
+        return $this->render('webhook/index.html.twig', [
+            // this array defines the variables passed to the template,
+            // where the key is the variable name and the value is the variable value
+            // (Twig recommends using snake_case variable names: 'foo_bar' instead of 'fooBar')
+            'user_first_name' => $userFirstName,
         ]);
     }
     /**
@@ -99,7 +103,7 @@ class WebHookController extends AbstractController
                             'inline_keyboard'=>$keyboard,
                             'one_time_keyboard'=>false
                         ]);
-                        $msg = $id."\n".$info['summary'].":\n\n".$info['description'];
+                        $msg = $id."\n".$info['summary'].":\n\n".htmlspecialchars($info['description']);
                         $telegram->sendMessage(['parse_mode'=>'HTML','chat_id'=>$user->getChatId(),'text'=>$msg,'reply_markup'=>$reply_markup]);
                     }
             }
